@@ -3,8 +3,8 @@ from logging.handlers import RotatingFileHandler
 
 # Bot Configuration
 LOG_FILE_NAME = "bot.log"
-PORT = '5090'
-OWNER_ID = 7156099919
+PORT = '5010'
+OWNER_ID = 5915807321
 
 MSG_EFFECT = 5046509860389126442
 
@@ -19,7 +19,7 @@ API_ID = "21484586" # API ID
 API_HASH = "d1d12be1da9b5a1cb8356c0bf0695a23" # API HASH
 WORKERS = 5
 
-DB_URI = "mongodb+srv://ANI_OTAKU:ANI_OTAKU@cluster0.t3frstc.mongodb.net/?appName=Cluster0" # MongoDB URI
+DB_URI = "mongodb+srv://AYU:AYU@cluster0.vdo5az0.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0" # MongoDB URI
 DB_NAME = "Maskman-Real_Mask_Man"
 
 FSUBS = [[-1001669538512, True, 10]] # Force Subscription Channels [channel_id, request_enabled, timer_in_minutes]
@@ -33,7 +33,7 @@ DB_CHANNEL = -1002298993427   # just put channel id dont add ""
 # Auto Delete Timer (seconds)
 AUTO_DEL = 300
 # Admin IDs
-ADMINS = [7156099919]
+ADMINS = [5915807321]
 # Bot Settings
 DISABLE_BTN = True
 PROTECT = False # For content protection stops message forwarding and copying from the bot and same goes for the screenshot
