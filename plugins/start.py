@@ -66,15 +66,14 @@ async def start_command(client: Client, message: Message):
                 await client.mongodb.clear_verify_session(user_id)
                 await client.mongodb.add_credits(user_id, 5)
                 unlock_link = f"https://t.me/{client.username}?start={base64_string}"
-                success_photo = client.messages.get("SHORT_VERIFY", "")
                 success_caption = (
                     "<b>ⓘ Your verification is successful!</b>\n"
                     "<blockquote>✦ 5 Credits Added to Your Account.</blockquote>"
                 )
-                await client.send_photo(
+                # ✅ Replaced send_photo with send_message
+                await client.send_message(
                     chat_id=message.chat.id,
-                    photo=success_photo,
-                    caption=success_caption,
+                    text=success_caption,
                     reply_markup=InlineKeyboardMarkup([
                         [
                             InlineKeyboardButton("✨ ᴄʟɪᴄᴋ ʜᴇʀᴇ ✨", url=unlock_link)
@@ -104,14 +103,13 @@ async def start_command(client: Client, message: Message):
                 client.LOGGER(__name__, client.name).warning(f"Shortener failed: {e}")
                 return await message.reply("Couldn't generate short link.")
 
-            short_photo = client.messages.get("SHORT_PIC", "")
             short_caption = client.messages.get("SHORT_MSG", "")
             tutorial_link = getattr(client, 'tutorial_link', "https://t.me/ANIME_X_FLEX/19")
 
-            await client.send_photo(
+            # ✅ Replaced send_photo with send_message
+            await client.send_message(
                 chat_id=message.chat.id,
-                photo=short_photo,
-                caption=short_caption,
+                text=short_caption,
                 reply_markup=InlineKeyboardMarkup([
                     [
                         InlineKeyboardButton("• ᴏᴘᴇɴ ʟɪɴᴋ", url=short_link),
@@ -331,7 +329,6 @@ async def start_command(client: Client, message: Message):
         if user_id in client.admins:
             buttons.insert(0, [InlineKeyboardButton("⛩️ ꜱᴇᴛᴛɪɴɢꜱ ⛩️", callback_data="settings")])
 
-        photo = client.messages.get("START_PHOTO", "")
         start_caption = client.messages.get('START', 'Welcome, {mention}').format(
             first=message.from_user.first_name,
             last=message.from_user.last_name,
@@ -340,21 +337,13 @@ async def start_command(client: Client, message: Message):
             id=message.from_user.id
         )
 
-        if photo:
-            await client.send_photo(
-                chat_id=message.chat.id,
-                photo=photo,
-                caption=start_caption,
-                message_effect_id=MSG_EFFECT,
-                reply_markup=InlineKeyboardMarkup(buttons)
-            )
-        else:
-            await client.send_message(
-                chat_id=message.chat.id,
-                text=start_caption,
-                message_effect_id=MSG_EFFECT,
-                reply_markup=InlineKeyboardMarkup(buttons)
-            )
+        # ✅ Always send text only, no photo
+        await client.send_message(
+            chat_id=message.chat.id,
+            text=start_caption,
+            message_effect_id=MSG_EFFECT,
+            reply_markup=InlineKeyboardMarkup(buttons)
+        )
         return
 
 #===============================================================#
@@ -362,7 +351,7 @@ async def start_command(client: Client, message: Message):
 @Client.on_message(filters.command('request') & filters.private)
 async def request_command(client: Client, message: Message):
     user_id = message.from_user.id
-    is_admin = user_id in client.admins  # ✅ Fix this line
+    is_admin = user_id in client.admins
     is_user_premium = await client.mongodb.is_pro(user_id)
 
     if is_admin or user_id == OWNER_ID:
@@ -400,7 +389,7 @@ async def request_command(client: Client, message: Message):
 @Client.on_message(filters.command('profile') & filters.private)
 async def my_plan(client: Client, message: Message):
     user_id = message.from_user.id
-    is_admin = user_id in client.admins  # ✅ Fix here
+    is_admin = user_id in client.admins
 
     if is_admin or user_id == OWNER_ID:
         await message.reply_text("🔹 You're my sensei! This command is only for users.")
@@ -436,7 +425,6 @@ async def credits_command(client: Client, message: Message):
     
     credits = await client.mongodb.get_credits(user_id)
     used = await client.mongodb.get_used_credits(user_id)
-
 
     text = (
         "<blockquote>📁 <b>𝖄𝖔𝖚𝖗 𝕮𝖗𝖊𝖉𝖎𝖙𝖘 𝕴𝖓𝖋𝖔𝖗𝖒𝖆𝖙𝖎𝖔𝖓</b></blockquote>\n\n"
@@ -524,8 +512,6 @@ async def add_credit_command(client: Client, message: Message):
 @Client.on_message(filters.command('buy') & filters.private)
 async def buy_command(client, message):
 
-    photo = client.messages.get("PREMIUM_PLANS_PIC", "")
-
     text = (
         "<blockquote>✦ <b>𝗣𝗥𝗘𝗠𝗜𝗨𝗠 𝗣𝗟𝗔𝗡𝗦</b></blockquote>\n"
         "<blockquote expandable>◍ 𝟷 ᴍᴏɴᴛʜ: ₹𝟷𝟿𝟿\n"
@@ -543,7 +529,8 @@ async def buy_command(client, message):
         [InlineKeyboardButton("• Close •", callback_data="close")]
     ])
 
-    await message.reply_photo(photo=photo, caption=text, reply_markup=buttons)
+    # ✅ Replaced reply_photo with reply_text
+    await message.reply_text(text, reply_markup=buttons)
 
 #===============================================================#
 
